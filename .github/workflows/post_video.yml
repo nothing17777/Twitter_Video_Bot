@@ -1,0 +1,55 @@
+name: Post Random Video to Twitter
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # Runs at 12:00 UTC every day
+  workflow_dispatch: # Allows manual trigger
+    inputs:
+      query:
+        description: 'YouTube search query (leave blank for random anime)'
+        required: false
+        default: ''
+
+jobs:
+  post-video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          pip install -r requirements.txt
+
+      - name: Create .env file
+        run: |
+          echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> .env
+          echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+          echo "API_SECRET=${{ secrets.API_SECRET }}" >> .env
+          echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> .env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
+
+      - name: Run bot
+        run: |
+          if [ -z "${{ github.event.inputs.query }}" ]; then
+            python bot_automation.py
+          else
+            python bot_automation.py "${{ github.event.inputs.query }}"
+          fi
+
+      - name: Commit and push used_videos.txt
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add used_videos.txt
+          git commit -m "Update used_videos.txt [skip ci]" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
