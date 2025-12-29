@@ -2,8 +2,17 @@ import yt_dlp
 import os
 
 def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
-    # Search for more videos than needed since we'll filter by duration
-    # Multiply by 3 to have a good buffer
+    """
+    Search for videos under a given duration limit.
+    
+    Args:
+        query: Search query
+        limit: Maximum number of videos to return (default: 5)
+        max_duration_seconds: Maximum video duration in seconds (default: 120)
+    
+    Returns:
+        List of video entries
+    """
     search_limit = limit * 3
     
     search_opts = {
@@ -35,6 +44,7 @@ def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
 
 def get_top_comments(video_url, max_comments=10, max_length=150):
     """
+
     Extract top comments (sorted by likes) from a YouTube video that are under max_length characters.
     Filters out comments containing timestamps, questions, links, and non-English text.
     
@@ -45,6 +55,7 @@ def get_top_comments(video_url, max_comments=10, max_length=150):
     
     Returns:
         List of comment strings
+
     """
     import re
     
@@ -110,6 +121,17 @@ def get_top_comments(video_url, max_comments=10, max_length=150):
 
 
 def download_video_direct(url):
+    """
+
+    Download a video from a direct URL.
+    
+    Args:
+        url: URL of the video to download
+    
+    Returns:
+        Tuple of (video_path, title) if successful, None if failed
+
+    """
     print(f"Downloading direct URL: {url}")
     
     # Get info first to get clean title
@@ -174,11 +196,6 @@ def download_video_direct(url):
     except Exception as e:
         print(f"Download error: {e}")
         return None, None
-
-# Combine search and download logic
-def search_and_download_video(query):
-    # Backward compatibility or search usage
-    pass
 
 if __name__ == "__main__":
     download_video_direct("https://www.youtube.com/watch?v=ocBJ-lao81o")

@@ -4,5 +4,4 @@ __pycache__/
 *$py.class
 .DS_Store
 *.mp4
-used_videos.txt
 .streamlit/
