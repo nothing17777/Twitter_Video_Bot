@@ -1,6 +1,18 @@
 import yt_dlp
 import os
 
+def _get_base_opts():
+    """Get base yt-dlp options with optional cookies"""
+    opts = {
+        'noundefine': True,
+        'quiet': True,
+        'no_warnings': True,
+    }
+    # Only add cookies if file exists
+    if os.path.exists('youtube_cookies.txt'):
+        opts['cookiefile'] = 'youtube_cookies.txt'
+    return opts
+
 def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
     """
     Search for videos under a given duration limit.
@@ -16,11 +28,11 @@ def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
     search_limit = limit * 3
     
     search_opts = {
-        'quiet': True,
         'extract_flat': True,
         'force_generic_extractor': False,
         'default_search': f'ytsearch{search_limit}',
         'noplaylist': True,
+        **_get_base_opts()
     }
     
     entries = []
@@ -124,10 +136,9 @@ def get_top_comments(video_url, max_comments=3, max_length=150):
         return (ascii_chars / total_chars) > 0.9
     
     opts = {
-        'quiet': True,
-        'no_warnings': True,
         'extract_flat': False,
         'getcomments': True,
+        **_get_base_opts()
     }
     
     comments = []
@@ -177,7 +188,7 @@ def download_video_direct(url):
     print(f"Downloading direct URL: {url}")
     
     # Get info first to get clean title
-    with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+    with yt_dlp.YoutubeDL(_get_base_opts()) as ydl:
         try:
              info = ydl.extract_info(url, download=False)
              title = info.get('title', 'video')
@@ -223,6 +234,7 @@ def download_video_direct(url):
             '-b:a', '128k',
             '-movflags', '+faststart'
         ],
+        **_get_base_opts()
     }
     
     try:
