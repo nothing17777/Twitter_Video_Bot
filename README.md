@@ -1,4 +1,4 @@
-# 📺 Social Video Bot
+# 📺 Social Video Downloader + Uploader
 
 A sophisticated Streamlit-based application designed to manage video content across YouTube, TikTok, and Twitter. Search for anime clips, download TikToks, and automate posting with smart formatting.
 
