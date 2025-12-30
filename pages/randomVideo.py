@@ -4,6 +4,7 @@ import random
 import config
 import os
 import time
+import format
 
 # Initialize session state for tracking used video URLs
 if 'video_urls' not in st.session_state:
@@ -79,6 +80,8 @@ if st.session_state.selected_video:
             st.write(f"**Views:** {selected_video.get('view_count', 0):,}")
             st.write(f"**URL:** {video_url}")
     
+    #HashTags
+    st.write(format.hashtag_from_query(query))
     # Display random comment
     if st.session_state.selected_comment:
         st.info(f"**Random Top Comment:** {st.session_state.selected_comment}")
@@ -89,9 +92,13 @@ if st.session_state.selected_video:
     st.divider()
     st.subheader("📤 Post to Twitter")
     
+    # Generate hashtags from the query
+    hashtags = " ".join(format.hashtag_from_query(query))
+    default_text = f"{st.session_state.selected_comment or selected_video.get('title', '')}\n\n{hashtags}"
+    
     tweet_text = st.text_area(
         "Tweet Text", 
-        value=st.session_state.selected_comment or selected_video.get('title', ''),
+        value=default_text,
         max_chars=280,
         help="Edit the text that will be posted with the video"
     )
@@ -141,6 +148,7 @@ if st.session_state.selected_video:
                     response = config.client.create_tweet(text=tweet_text, media_ids=[media_id])
                     tweet_id = response.data['id']
                     st.success(f"✅ Tweet posted successfully!")
+                    youtube_downloader.add_used_video(video_url)
                     st.write(f"Tweet ID: {tweet_id}")
                     st.write(f"View at: https://twitter.com/user/status/{tweet_id}")
                     
@@ -155,9 +163,9 @@ if st.session_state.selected_video:
 # Show current stats
 with st.sidebar:
     st.header("Statistics")
-    st.metric("Total Videos Used", len(st.session_state.video_urls))
+    st.metric("Total Videos Used", youtube_downloader.get_used_videos_count())
     if st.button("Clear History"):
-        st.session_state.video_urls.clear()
+        youtube_downloader.clear_used_videos()
         st.session_state.selected_video = None
         st.session_state.selected_comment = None
         st.rerun()

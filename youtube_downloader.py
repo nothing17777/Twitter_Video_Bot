@@ -29,8 +29,8 @@ def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
             info = ydl.extract_info(f"ytsearch{search_limit}:{query}", download=False)
             if 'entries' in info:
                 for entry in info['entries']:
-                    # Only add videos under the duration limit
-                    if entry.get('duration') and entry.get('duration') < max_duration_seconds:
+                    # Only add videos under the duration limit and not already used
+                    if (entry.get('duration') and entry.get('duration') < max_duration_seconds) and (entry.get('url') not in get_used_videos()):
                         entries.append(entry)
                         # Stop once we have enough videos
                         if len(entries) >= limit:
@@ -41,8 +41,50 @@ def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
     
     return entries
 
+def get_used_videos():
+    """
+    This reads usedVideo.txt and returns a set of used video URLs.
+    
+    Returns:
+        Set of used video URLs
+    """
+    try:
+        with open('usedVideo.txt', 'r') as f:
+            return set(f.read().splitlines())
+    except FileNotFoundError:
+        return set()
+    
+def add_used_video(url):
+    """
+    This appends a video URL to usedVideo.txt.
+    
+    Args:
+        url: Video URL to add
+    """
+    with open('usedVideo.txt', 'a') as f:
+        f.write(url + '\n')
 
-def get_top_comments(video_url, max_comments=10, max_length=150):
+def clear_used_videos():
+    """
+    This clears the usedVideo.txt file.
+    """
+    with open('usedVideo.txt', 'w') as f:
+        f.write('')
+
+def get_used_videos_count():
+    """
+    This reads usedVideo.txt and returns the number of used videos.
+    
+    Returns:
+        Number of used videos
+    """
+    try:
+        with open('usedVideo.txt', 'r') as f:
+            return len(f.read().splitlines())
+    except FileNotFoundError:
+        return 0
+
+def get_top_comments(video_url, max_comments=3, max_length=150):
     """
 
     Extract top comments (sorted by likes) from a YouTube video that are under max_length characters.
