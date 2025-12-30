@@ -1,14 +1,14 @@
-# 📺 Twitter Video Bot
+# 📺 Social Video Bot
 
-A sophisticated Streamlit-based application designed to search for anime clips on YouTube, extract top comments, and post them directly to Twitter with automated hashtag generation and duplicate prevention.
+A sophisticated Streamlit-based application designed to manage video content across YouTube, TikTok, and Twitter. Search for anime clips, download TikToks, and automate posting with smart formatting.
 
 ## ✨ Features
 
-- **YouTube Search**: Find videos under 2 minutes based on keywords.
-- **Comment Extraction**: Automatically pulls the top liked comments from YouTube to use as tweet content.
-- **Random Selector**: Pick a random unused video from search results for quick posting.
-- **Smart Hashtags**: Automatic hashtag generation based on anime titles (Chainsaw Man, JJK, One Piece, etc.).
-- **Duplicate Prevention**: Keeps track of every video posted in `usedVideo.txt` to ensure you never post the same clip twice.
+- **YouTube search & Tweet**: Find YouTube videos under 2 minutes, extract top comments, and post them directly to Twitter with automated hashtag generation.
+- **TikTok Downloader**: Download TikTok videos directly by URL.
+- **YouTube Shorts Uploader**: Upload downloaded videos (like TikToks) as YouTube Shorts with customizable titles, descriptions, and tags.
+- **Smart Hashtags**: Automatic hashtag generation for anime clips (Chainsaw Man, JJK, One Piece, etc.).
+- **Duplicate Prevention**: Tracks posted videos in `usedVideo.txt` to ensure no double-posting on Twitter.
 - **Premium UI**: Clean, responsive interface built with Streamlit.
 
 ## 🚀 Getting Started
@@ -16,10 +16,11 @@ A sophisticated Streamlit-based application designed to search for anime clips o
 ### Prerequisites
 
 - Python 3.10+
-- **FFmpeg**: Required for video processing.
+- **FFmpeg**: Required for video processing and encoding.
   - Mac: `brew install ffmpeg`
   - Linux: `sudo apt install ffmpeg`
-- Twitter Developer Account (API Keys)
+- Twitter Developer Account (for Twitter posting)
+- Google Cloud Project with YouTube Data API v3 enabled (for YouTube uploading)
 
 ### Installation
 
@@ -34,9 +35,9 @@ A sophisticated Streamlit-based application designed to search for anime clips o
    pip install -r requirements.txt
    ```
 
-3. Configure environment variables:
-   - Copy `.env_example` to `.env`
-   - Fill in your Twitter API credentials.
+3. Configure environment variables (`.env`):
+   - `BEARER_TOKEN`, `API_KEY`, `API_SECRET`, `ACCESS_TOKEN`, `ACCESS_TOKEN_SECRET` (Twitter)
+   - `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` (YouTube API)
 
 ### Running the App
 
@@ -47,15 +48,17 @@ streamlit run app.py
 ## 🛠️ Technology Stack
 
 - **Streamlit**: Frontend UI
-- **yt-dlp**: YouTube metadata and video downloading
+- **yt-dlp**: YouTube and TikTok downloading
 - **Tweepy**: Twitter API integration
-- **FFmpeg**: Video encoding for Twitter compatibility
+- **Google API Client**: YouTube Data API integration
+- **FFmpeg**: Video encoding for platform compatibility
 
 ## 📂 Project Structure
 
 - `app.py`: Main entry point and navigation.
-- `pages/search.py`: Manual video search and history management.
-- `pages/randomVideo.py`: Random video selection and posting logic.
-- `youtube_downloader.py`: Core logic for YT interaction.
-- `format.py`: Hashtag and text formatting utilities.
+- `downloader/`: Core logic for YouTube and TikTok interaction.
+- `uploader/`: YouTube Shorts upload implementation.
+- `posters/`: Twitter posting automation.
+- `format/`: Hashtag and text formatting utilities.
+- `pages/`: Streamlit UI pages (Search, Random Video, TikTok).
 - `usedVideo.txt`: Local database of posted URLs.

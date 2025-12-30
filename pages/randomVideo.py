@@ -1,10 +1,10 @@
 import streamlit as st
-import youtube_downloader
+from downloader import youtube_downloader
 import random
 import config
 import os
 import time
-import format
+from format import format
 
 # Initialize session state for tracking used video URLs
 if 'video_urls' not in st.session_state:

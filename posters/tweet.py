@@ -1,9 +1,16 @@
-import config
-import youtube_downloader
+try:
+    import config
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    import config
+
+from downloader import youtube_downloader
 import os
 import time
 import random
-import format
+from format import format
 
 querys = ["chainsaw man clips", "bocchi the rock clips", "k-on clips", "jjk clips"]
 
