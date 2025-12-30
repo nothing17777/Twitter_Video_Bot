@@ -1,6 +1,12 @@
 import yt_dlp
 import os
 
+# Check if we are running in a cloud environment with a /data volume
+# Most cloud providers (Railway/Render) use this for persistent storage
+STORAGE_DIR = "/data" if os.path.exists("/data") else "."
+USED_VIDEOS_PATH = os.path.join(STORAGE_DIR, "usedVideo.txt")
+COOKIES_PATH = os.path.join(STORAGE_DIR, "youtube_cookies.txt") if os.path.exists(os.path.join(STORAGE_DIR, "youtube_cookies.txt")) else "youtube_cookies.txt"
+
 def searchVideosUnderTwoMin(query, limit=5, max_duration_seconds=120):
     """
     Search for videos under a given duration limit.
@@ -49,7 +55,7 @@ def get_used_videos():
         Set of used video URLs
     """
     try:
-        with open('usedVideo.txt', 'r') as f:
+        with open(USED_VIDEOS_PATH, 'r') as f:
             return set(f.read().splitlines())
     except FileNotFoundError:
         return set()
@@ -61,14 +67,14 @@ def add_used_video(url):
     Args:
         url: Video URL to add
     """
-    with open('usedVideo.txt', 'a') as f:
+    with open(USED_VIDEOS_PATH, 'a') as f:
         f.write(url + '\n')
 
 def clear_used_videos():
     """
     This clears the usedVideo.txt file.
     """
-    with open('usedVideo.txt', 'w') as f:
+    with open(USED_VIDEOS_PATH, 'w') as f:
         f.write('')
 
 def get_used_videos_count():
@@ -79,7 +85,7 @@ def get_used_videos_count():
         Number of used videos
     """
     try:
-        with open('usedVideo.txt', 'r') as f:
+        with open(USED_VIDEOS_PATH, 'r') as f:
             return len(f.read().splitlines())
     except FileNotFoundError:
         return 0

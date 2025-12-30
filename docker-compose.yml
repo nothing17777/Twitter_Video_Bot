@@ -1,0 +1,14 @@
+services:
+  twitter-bot:
+    build: .
+    container_name: twitter_video_bot
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./usedVideo.txt:/app/usedVideo.txt
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

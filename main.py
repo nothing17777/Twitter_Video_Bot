@@ -119,5 +119,5 @@ def post_video_tweet():
             print(f"Cleaning up file: {video_path}")
             os.remove(video_path)
 
-
-post_video_tweet()
+if __name__ == "__main__":
+    post_video_tweet()

@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.git/
+.env
+.ipynb_checkpoints/
+.DS_Store
+*.mp4
+bot_scheduler.log
+bot.log
