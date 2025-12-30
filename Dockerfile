@@ -11,11 +11,13 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     curl \
-    gnupg \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
+    unzip \
+    && curl -fsSL https://deno.land/install.sh | sh \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Add Deno to PATH
+ENV PATH="/root/.deno/bin:$PATH"
 
 # Set the working directory in the container
 WORKDIR /app
